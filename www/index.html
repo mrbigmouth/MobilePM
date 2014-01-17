@@ -9,20 +9,35 @@
     <link rel="stylesheet" href="css/index.css" />
   </head>
   <body>
-    <script type="text/x-underscore-template" id="template_topHead">
-      <header>
-        <a href="#connect" class="ui-btn ui-icon-check ui-btn-right ui-btn-icon-left">離線中</a>
-      </header>
+    <script type="text/x-underscore-template" id="template_dynamicMenu">
+      <ul>
+        <% this.collection.each(function(d) { %>
+          <li>
+            <% if (d.get('link')) { %>
+                <a href="<%= d.get('link') %>"><%= d.get('prompt') %></a>
+            <% } else { %>
+                <%= d.get('prompt') %>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
     </script>
-
+    <script type="text/x-underscore-template" id="template_connect">
+      <div>
+        test
+      </div>
+    </script>
     <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
     <script type="text/javascript">
     //jQuery Mobile Configuring
     $(document).on('mobileinit', function() {
+      $.support.cors = true;
       $.extend(
         $.mobile
-      , {'autoInitializePage' : false
-        ,'ns'                 : 'jqm'
+      , {'autoInitializePage'    : false
+        ,'allowCrossDomainPages' : true
+        ,'pushStateEnabled'      : false
+        ,'ns'                    : 'jqm-'
         }
       );
     });
@@ -30,6 +45,7 @@
     <script type="text/javascript" src="lib/jquery.mobile-1.4.0.min.js"></script>
     <script type="text/javascript" src="lib/underscore-min.js"></script>
     <script type="text/javascript" src="lib/backbone-min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
   </body>
 </html>
