@@ -27,7 +27,6 @@ APP.area.home =
     }
   );
 
-/*
 //連線
 APP.area.connect =
   new (APP.view.dialog.extend(
@@ -35,9 +34,9 @@ APP.area.connect =
       }
   ))(
     {'id'     : 'connect'
+    ,'title'  : '連線'
     }
   );
-*/
 
 $.mobile.initializePage();
 

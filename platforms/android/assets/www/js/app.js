@@ -111,7 +111,6 @@ APP.view.header =
       {'jqmOpt'     :
           {'role'          : 'header'
           }
-      ,'template'   : _.template('<header><h7><%= title %></h7></header>')
       ,'before1'    :
           function(args) {
             this.jqmOpt = _.extend(this.jqmOpt, args.jqmOpt);
@@ -194,11 +193,14 @@ APP.view.dialog =
         }
       //創建dialog header
       ,'after1'     :
-          function(args) {
+          function() {
             var $header = this.$header = 
               new APP.view.header(
-                {'$area'  : this.$el
-                ,'title'  : args.title
+                {'jqmOpt' :
+                    {'position' : 'fixed'
+                    ,'theme'    : 'b'
+                    }
+                ,'$area'  : this.$el
                 }
               )
           }
