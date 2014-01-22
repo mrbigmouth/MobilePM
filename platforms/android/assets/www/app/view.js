@@ -9,6 +9,8 @@ var $     = root.jQuery
           {'collection' : {}
           //儲存Backbone的Model實體
           ,'model'      : {}
+          //儲存Backbone的 Collection/Model 資料實體
+          ,'data'       : {}
           //儲存APP的所有功能模組
           ,'module'     : {}
           //儲存Backbone視圖
@@ -20,20 +22,20 @@ var $     = root.jQuery
   , undefined
   ;
 
-
 //Backbone Modal
 //模組資料基本型態
 APP.model.module =
     BB.Model.extend(
       {'defaults'   :
           {'name'     : 'module name'
+          ,'action'   : 'link'
           ,'sort'     : 10
           }
       ,'initialize' :
           function() {
             //初始時將prompt設為name
             this.set('prompt', this.get('name'));
-            if (! this.get('link')) {
+            if (this.get('action') === 'link' && ! this.get('link')) {
               this.set('link', '#' + this.id);
             }
           }
@@ -62,7 +64,6 @@ APP.view.jqm =
               , fn
               , $dom
               ;
-
             //循序執行可繼承的初始化dom之前的method
             for (i = 1; ( typeof (fn = _this['before' + i]) ) === 'function'; i += 1) {
               fn.call(_this, args);
@@ -110,8 +111,9 @@ APP.view.header =
     APP.view.jqm.extend(
       {'jqmOpt'     :
           {'role'          : 'header'
+          ,'add-back-btn'  : 'true'
           }
-      ,'template'   : _.template('<header><h7><%= title %></h7></header>')
+      ,'template'   : _.template('<header><h4><%= title %></h4></header>')
       ,'before1'    :
           function(args) {
             this.jqmOpt = _.extend(this.jqmOpt, args.jqmOpt);
@@ -146,6 +148,23 @@ APP.view.dynamicMenu =
           function(args) {
             args.$area.append( this.$el );
           }
+      ,'events'     :
+          {'click a':
+              function(e) {
+                var $this  = $(e.currentTarget)
+                  , id     = $this.attr('data-id')
+                  , module = this.collection.get( id )
+                  , action = module.get('action')
+                  ;
+                if (action === 'link') {
+                  $.mobile.navigate( module.get('link') );
+                }
+                else if (typeof action === 'function') {
+                  action.call( e.currentTarget );
+                }
+                return true;
+              }
+          }
       }
     )
 
@@ -154,12 +173,24 @@ APP.view.page =
     APP.view.jqm.extend(
       {'jqmOpt'     :
           {'role'          : 'page'
-          ,'domCache'      : 'true'
+          ,'dom-cache'     : 'true'
+          ,'add-back-btn'  : 'true'
           }
       ,'before1'    :
           function(args) {
             this.jqmOpt = _.extend(this.jqmOpt, args.jqmOpt);
+            this.jqmOpt.title = args.title;
             this.collection = args.collection;
+          }
+      //創建header
+      ,'after1'     :
+          function(args) {
+            var $header = this.$header = 
+              new APP.view.header(
+                {'$area'  : this.$el
+                ,'title'  : args.title
+                }
+              )
           }
       }
     )
@@ -172,7 +203,7 @@ APP.view.page =
  */
 APP.view.menuPage =
     APP.view.page.extend(
-      {'after1'     :
+      {'after2'     :
           function(args) {
             new APP.view.dynamicMenu(
               {'collection' : args.collection
@@ -183,14 +214,16 @@ APP.view.menuPage =
       }
     )
 
+/*
 //dialog視圖
 APP.view.dialog =
     APP.view.jqm.extend(
       {'jqmOpt'     :
         {'role'          : 'page'
-        ,'domCache'      : 'true'
+        ,'dom-cache'     : 'true'
         ,'dialog'        : 'true'
-        ,'closeBtn'      : 'right'
+        ,'close-btn'     : 'right'
+        ,'transition'    : 'none'
         }
       //創建dialog header
       ,'after1'     :
@@ -204,5 +237,5 @@ APP.view.dialog =
           }
       }
     )
-
+*/
 }(this));

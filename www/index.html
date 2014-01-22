@@ -4,29 +4,13 @@
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
     <link rel="stylesheet" href="lib/jquery.mobile-1.4.0.min.css" />
     <link rel="stylesheet" href="css/index.css" />
   </head>
   <body>
-    <script type="text/x-underscore-template" id="template_dynamicMenu">
-      <ul>
-        <% this.collection.each(function(d) { %>
-          <li>
-            <% if (d.get('link')) { %>
-                <a href="<%= d.get('link') %>"><%= d.get('prompt') %></a>
-            <% } else { %>
-                <%= d.get('prompt') %>
-            <% } %>
-          </li>
-        <% }) %>
-      </ul>
-    </script>
-    <script type="text/x-underscore-template" id="template_connect">
-      <div>
-        test
-      </div>
-    </script>
+    <script data-main="./index.js" src="lib/require.js"></script>
+    <!--
     <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
     <script type="text/javascript">
     //jQuery Mobile Configuring
@@ -45,7 +29,29 @@
     <script type="text/javascript" src="lib/jquery.mobile-1.4.0.min.js"></script>
     <script type="text/javascript" src="lib/underscore-min.js"></script>
     <script type="text/javascript" src="lib/backbone-min.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="app/view.js"></script>
+    <script type="text/javascript" src="app/app.js"></script>
+    <script type="text/javascript">
+      if (navigator.app) {
+        document.addEventListener(
+          'deviceready'
+        , function() {
+            APP.start();
+          }
+        , true);
+      }
+      else {
+        APP.start();
+      }
+    </script>
+    <script src="http://1.34.192.129/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect('http://1.34.192.129');
+      socket.on('news', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+      });
+    </script>
+    -->
   </body>
 </html>
