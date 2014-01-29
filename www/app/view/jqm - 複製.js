@@ -24,17 +24,23 @@ define(
 
             //製出dom
             //依參數覆蓋原設定 
-            _this.template = args.template || _this.template;
-            if (typeof _this.template !== 'function') {
+            this.template = args.template || this.template;
+            /*
+            if (typeof _this.template === 'function') {
               //若為template，則依參數製出dom
-              _this.template =
-                  function() {
-                    return (args.html || this.html);
-                  }
+              $dom = $( $.parseHTML( _this.template.call(_this, args) ) );
             }
+            else {
+              //否則視為靜態
+              //依參數覆蓋原設定 
+              this.html = (args.html || this.html).replace(/JQM-/g, 'data-' + mobile.ns);
+              $dom = $( $.parseHTML( _this.html ) );
+            }
+            */
+
             //製出dom並設定$el與el
-            _this.el = $.parseHTML( _this.template.call(_this, args).trim().replace(/JQM-/g, 'data-' + mobile.ns) );
-            _this.$el = ($dom = $( _this.el ) );
+            _this.$el = $dom;
+            _this.el = $dom[0];
 
             //設置jqm屬性
             _.each(_this.jqmOpt, function(v, k) {
@@ -52,15 +58,11 @@ define(
             }
 
             //插入頁面
-            $('body').append( $dom );
+            _this.render.call(_this, args);
           }
       ,'render'     :
           function() {
-            _this.el = $.parseHTML( _this.template.call(_this, args).trim().replace(/JQM-/g, 'data-' + mobile.ns) );
-            _this.$el = ($dom = $( _this.el ) );
-            debugger;
-            $dom.enhanceWithin();
-            debugger;
+            $('body').append( this.$el );
           }
       }
     );
