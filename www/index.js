@@ -2,9 +2,10 @@ requirejs.config(
   {'baseUrl' : ''
   ,'paths'   :
     {'jquery'     : 'lib/jquery-2.0.3.min'
+    ,'mobile'     : 'lib/jquery.mobile-1.4.0.min'
+    ,'cookie'     : 'lib/jquery.cookie'
     ,'underscore' : 'lib/underscore-min'
     ,'backbone'   : 'lib/backbone-min'
-    ,'mobile'     : 'lib/jquery.mobile-1.4.0.min'
     ,'text'       : 'lib/requireText'
     ,'socketio'   : 'lib/socket.io'
     ,'module'     : 'module'
@@ -14,16 +15,16 @@ requirejs.config(
     {'jquery'     :
         {'exports' : '$'
         }
+    ,'mobile'     :
+        {'deps'    : ['jquery']
+        ,'exports' : '$.mobile'
+        }
     ,'underscore' :
         {'exports' : '_'
         }
     ,'backbone'   :
         {'deps'    : ['underscore', 'jquery']
         ,'exports' : 'Backbone'
-        }
-    ,'mobile'     :
-        {'deps'    : ['jquery']
-        ,'exports' : '$.mobile'
         }
     ,'socketio'     :
         {'exports' : 'io'

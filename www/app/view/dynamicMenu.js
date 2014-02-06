@@ -16,7 +16,11 @@ define(function(require, exports, module){
             _this.collection = args.collection;
             _this.listenTo(args.collection, 'add remove reset sort change', function() {
               _this.render(args);
-              _this.$el.listview('refresh');
+              /*
+              if (mobile.activePage.attr('id') === 'home') {
+                _this.$el.listview('refresh');
+              }
+              */
             });
           }
       ,'events'     :

@@ -10,25 +10,18 @@ var connect  = require('connect')
 
 app
   .use(connect.logger('dev'))
-  .use(
-    connect.cookieSession(
-      {'secret' : config.secret
-      ,'cookie' :
-          {'maxAge'   : null
-          ,'path'     : '/'
-          ,'httpOnly' : false
-          }
-      }
-    )
-  )
-  .use(function(req, res){
-    res.end('hello world\n');
-  })
+  .use(connect.static(__dirname + '/static'))
+  .use(connect.cookieParser);
 
 server = http.createServer(app).listen( config.port );
 
 io = require('socket.io').listen(server);
 
+io.configure(function () {
+  io.set('authorization', function (handshakeData, callback) {
+    callback(null, true);
+  });
+});
 
 io.sockets.on('connection', function (socket) {
   
