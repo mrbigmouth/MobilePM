@@ -1,10 +1,8 @@
-define(
-  ['underscore'
-  ,'app/view/jqm'
-  ,'app/view/header'
-  ]
-, function(_, jqm, header){
-    return jqm.extend(
+define(function(require, exports, module) {
+  var _ = require('underscore');
+
+  module.exports =
+    require('app/view/jqm').extend(
       {'jqmOpt'     :
           {'role'          : 'page'
           ,'dom-cache'     : 'true'
@@ -14,13 +12,12 @@ define(
           function(args) {
             this.jqmOpt = _.extend(this.jqmOpt, args.jqmOpt);
             this.jqmOpt.title = args.title;
-            this.collection = args.collection;
           }
       //創建header
       ,'after1'     :
           function(args) {
             var $header = this.$header = 
-              new header(
+              new (require('app/view/header'))(
                 {'$area'  : this.$el
                 ,'title'  : args.title
                 }
@@ -28,6 +25,5 @@ define(
           }
       }
     );
-  }
-);
+});
 

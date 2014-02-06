@@ -1,9 +1,8 @@
-define(
-  ['underscore'
-  ,'app/view/jqm'
-  ]
-, function(_, jqm) {
-    return jqm.extend(
+define(function(require, exports, module) {
+  var _ = require('underscore');
+
+  module.exports =
+    require('app/view/jqm').extend(
       {'jqmOpt'     :
           {'role'          : 'header'
           ,'add-back-btn'  : 'true'
@@ -14,11 +13,11 @@ define(
             this.jqmOpt = _.extend(this.jqmOpt, args.jqmOpt);
           }
       //插入指定區域開頭
-      ,'render'     :
-          function(args) {
-            args.$area.prepend( this.$el );
+      ,'insert'     :
+          function(area) {
+            this.$el.prependTo( area );
+            return this;
           }
       }
     )
-  }
-);
+});

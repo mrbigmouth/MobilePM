@@ -1,53 +1,42 @@
-//APP初始化
-(function(root, undefined) {
-  var MODULES =
+define(function (require, exports, module) {
+  var $       = require('jquery')
+    , _       = require('underscore')
+    , MODULES =
       ['connect'
       ]
+    , needLoadList
     ;
 
-  //定義APP導出物件
-  define(
-    ['jquery'
-    ,'underscore'
-    ,'app/view/home'
-    ,'app/collection/module'
-    ]
-  , function($, _, home, module){
-      var APP = 
-            //建立使用模組 空collection
-            {'modules' : new module()
-            //初始不建立連線
-            ,'socket'  : null
-            ,'start'   : $.noop()
+  //建立使用模組 空collection
+  exports.modules = new (require('app/collection/module'))();
+  //初始連線為空
+  exports.socket = null;
+
+  //計算程式須載入的模組路徑
+  needLoadList = 
+    _.map(MODULES, function(v) {
+      return 'module/' + v + '/' + v;
+    });
+
+  //需載入列表最前方加上jquery Mobile
+  needLoadList.unshift('mobile');
+
+  //程式開始method
+  exports.start =
+    function() {
+      require(
+        needLoadList
+      , function(mobile) {
+          //建立首頁
+          new (require('app/view/home'))(
+            {'id'         : 'home'
+            ,'title'      : '主選單'
+            ,'collection' : exports.modules
             }
-        //模組路徑分析
-        , modulePath = 
-            _.map(MODULES, function(v) {
-              return 'module/' + v + '/' + v;
-            })
-        ;
-
-      modulePath.unshift('mobile');
-      APP.start = 
-          function() {
-            //載入mobile後初始化
-            require(
-              modulePath
-            , function(mobile) {
-                //載入模組完成後才建立首頁
-                new home(
-                  {'id'         : 'home'
-                  ,'title'      : '主選單'
-                  ,'collection' : APP.modules
-                  }
-                );
-                mobile.navigate('#home');
-              }
-            );
-          }
-
-      return APP;
+          );
+          mobile.initializePage();
+        }
+      );
     }
-  );
 
-})(this)
+});

@@ -1,4 +1,3 @@
-
 requirejs.config(
   {'baseUrl' : ''
   ,'paths'   :
@@ -55,16 +54,13 @@ require(
         }
       );
     });
-  }
-);
-
-//app啟動
-require(
-  ['app/app'
-  ,'mobile'
-  ]
-, function(app, mobile) {
-
-    app.start();
+    //app啟動
+    require(
+      ['app/app'
+      ]
+    , function(app) {
+        app.start();
+      }
+    );
   }
 );

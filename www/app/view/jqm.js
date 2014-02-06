@@ -1,11 +1,11 @@
-define(
-  ['jquery'
-  ,'underscore'
-  ,'backbone'
-  ,'mobile'
-  ]
-, function($, _, BB, mobile){
-    return BB.View.extend(
+define(function(require, exports, module){
+  var _      = require('underscore')
+    , $      = require('jquery')
+    , mobile = require('mobile')
+    ;
+
+  module.exports =
+    require('backbone').View.extend(
       {'jqmOpt'     : {}
       ,'html'       : '<div></div>'
       ,'template'   : undefined
@@ -14,8 +14,12 @@ define(
             var _this   = this
               , i
               , fn
-              , $dom
+              , $el
               ;
+
+            //設定collection與model
+            _this.collection = args.collection;
+            _this.model = args.model;
 
             //循序執行可繼承的初始化dom之前的method
             for (i = 1; ( typeof (fn = _this['before' + i]) ) === 'function'; i += 1) {
@@ -29,40 +33,49 @@ define(
               //若為template，則依參數製出dom
               _this.template =
                   function() {
-                    return (args.html || this.html);
+                    return (args.html || this.html).replace(/JQM-/g, 'data-' + mobile.ns).trim();
                   }
-            }
-            //製出dom並設定$el與el
-            _this.el = $.parseHTML( _this.template.call(_this, args).trim().replace(/JQM-/g, 'data-' + mobile.ns) );
-            _this.$el = ($dom = $( _this.el ) );
+            };
+
+            _this.el = $.parseHTML( _this.template.call(_this, args) );
+            _this.$el = ( $el = $( _this.el ) );
 
             //設置jqm屬性
             _.each(_this.jqmOpt, function(v, k) {
-              $dom.attr('data-' + mobile.ns + k, v);
+              $el.attr('data-' + mobile.ns + k, v);
             });
 
             //設置id
             if (args && args.id && $('#' + args.id).length < 1) {
-              this.$el.attr('id', args.id);
+              $el.attr('id', args.id);
             }
+
+            //製成並插入頁面
+            _this.render(args).insert( args.$area || 'body' );
+          }
+      //插入頁面的方法
+      ,'insert'     :
+          function(area) {
+            this.$el.appendTo( area );
+            return this;
+          }
+      ,'render'     :
+          function(args) {
+            var _this = this
+              , fn
+              , i
+              ;
+
+            _this.$el
+              .html( $($.parseHTML( _this.template.call(_this, args) )).children() );
 
             //循序執行可繼承的初始化dom之後的method
             for (i = 1; ( typeof (fn = _this['after' + i]) ) === 'function'; i += 1) {
               fn.call(_this, args);
             }
 
-            //插入頁面
-            $('body').append( $dom );
-          }
-      ,'render'     :
-          function() {
-            _this.el = $.parseHTML( _this.template.call(_this, args).trim().replace(/JQM-/g, 'data-' + mobile.ns) );
-            _this.$el = ($dom = $( _this.el ) );
-            debugger;
-            $dom.enhanceWithin();
-            debugger;
+            return this;
           }
       }
     );
-  }
-);
+});

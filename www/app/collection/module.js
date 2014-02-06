@@ -1,10 +1,7 @@
-define(
-  ['backbone'
-  ,'app/model/module'
-  ]
-, function(BB, module){
-  return BB.Collection.extend(
-    {'model' : module
-    }
-  );
+define(function(require, exports, module){
+  module.exports =
+    require('backbone').Collection.extend(
+      {'model' : require('app/model/module')
+      }
+    );
 });
